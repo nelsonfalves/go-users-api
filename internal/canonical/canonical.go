@@ -1,6 +1,6 @@
 package canonical
 
 type User struct {
-	Id   string
-	Name string
+	Id   string `bson:"_id"`
+	Name string `bson:"name"`
 }

@@ -1,8 +1,15 @@
 package main
 
-import "go-quickstart/internal/repositories"
+import (
+	"go-quickstart/internal/canonical"
+	"go-quickstart/internal/repositories"
+)
 
 func main() {
-	repositories.Get("65e4889d5d41b2031463a538")
+	repositories.Create(canonical.User{
+		Id:   "12345",
+		Name: "Nelson",
+	})
 
+	repositories.Get()
 }
