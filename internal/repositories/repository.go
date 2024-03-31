@@ -41,7 +41,33 @@ func Create(user canonical.User) error {
 	return nil
 }
 
-func Get() (canonical.User, error) {
+func Get() ([]canonical.User, error) {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
+	if err != nil {
+		return nil, err
+	}
+
+	collection := client.Database("user-database").Collection("users")
+
+	var users []canonical.User
+	res, err := collection.Find(context.Background(), bson.D{})
+	if err != nil {
+		return nil, err
+	}
+
+	for res.Next(context.Background()) {
+		var user canonical.User
+		err := res.Decode(&user)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func GetById(id string) (canonical.User, error) {
 
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
 
@@ -51,20 +77,61 @@ func Get() (canonical.User, error) {
 
 	collection := client.Database("user-database").Collection("users")
 
+	result := collection.FindOne(context.Background(), bson.D{
+		{
+			Key:   "_id",
+			Value: id,
+		},
+	})
+
 	var user canonical.User
-	res, err := collection.Find(context.Background(), bson.D{})
+
+	result.Decode(&user)
+
+	err = result.Decode(&user)
 	if err != nil {
 		return canonical.User{}, err
 	}
 
-	for res.Next(context.Background()) {
-		err := res.Decode(&user)
-		if err != nil {
-			return canonical.User{}, err
-		}
+	return user, nil
+}
+
+func Update(id string, user canonical.User) error {
+
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
+
+	if err != nil {
+		return err
 	}
 
-	fmt.Println(user)
+	collection := client.Database("user-database").Collection("users")
 
-	return user, nil
+	filter := bson.D{{Key: "_id", Value: id}}
+	fields := bson.M{"$set": user}
+
+	_, err = collection.UpdateOne(context.Background(), filter, fields)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Delete(id string) error {
+
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
+	if err != nil {
+		return err
+	}
+
+	collection := client.Database("user-database").Collection("users")
+
+	_, err = collection.DeleteOne(context.Background(), bson.D{{Key: "_id", Value: id}})
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
