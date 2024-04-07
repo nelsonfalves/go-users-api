@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"go-quickstart/internal/canonical"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,84 +10,69 @@ import (
 )
 
 type Repository interface {
+	Create(user canonical.User) error
+	Get() ([]canonical.User, error)
+	GetById(id string) (canonical.User, error)
+	Update(id string, user canonical.User) error
+	Delete(id string) error
 }
 
 type repository struct {
+	collection *mongo.Collection
 }
 
 func New() Repository {
-	return &repository{}
-}
-
-func Create(user canonical.User) error {
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
 	if err != nil {
-		return err
+		panic(err)
 	}
 
-	collection := client.Database("user-database").Collection("users")
+	return &repository{
+		collection: client.Database("user-database").Collection("users"),
+	}
+}
 
-	res, err := collection.InsertOne(context.Background(), user)
-
+func (repo *repository) Create(user canonical.User) error {
+	_, err := repo.collection.InsertOne(context.Background(), user)
 	if err != nil {
 		return err
 	}
-
-	id := res.InsertedID
-
-	fmt.Println(id)
 
 	return nil
 }
 
-func Get() ([]canonical.User, error) {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
-	if err != nil {
-		return nil, err
-	}
-
-	collection := client.Database("user-database").Collection("users")
-
+func (repo *repository) Get() ([]canonical.User, error) {
 	var users []canonical.User
-	res, err := collection.Find(context.Background(), bson.D{})
+
+	res, err := repo.collection.Find(context.Background(), bson.D{})
 	if err != nil {
 		return nil, err
 	}
 
 	for res.Next(context.Background()) {
 		var user canonical.User
+
 		err := res.Decode(&user)
 		if err != nil {
 			return nil, err
 		}
+
 		users = append(users, user)
 	}
 
 	return users, nil
 }
 
-func GetById(id string) (canonical.User, error) {
+func (repo *repository) GetById(id string) (canonical.User, error) {
+	var user canonical.User
 
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
-
-	if err != nil {
-		return canonical.User{}, err
-	}
-
-	collection := client.Database("user-database").Collection("users")
-
-	result := collection.FindOne(context.Background(), bson.D{
+	err := repo.collection.FindOne(context.Background(), bson.D{
 		{
 			Key:   "_id",
 			Value: id,
 		},
-	})
+	}).Decode(&user)
 
-	var user canonical.User
-
-	result.Decode(&user)
-
-	err = result.Decode(&user)
 	if err != nil {
 		return canonical.User{}, err
 	}
@@ -96,20 +80,11 @@ func GetById(id string) (canonical.User, error) {
 	return user, nil
 }
 
-func Update(id string, user canonical.User) error {
-
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
-
-	if err != nil {
-		return err
-	}
-
-	collection := client.Database("user-database").Collection("users")
-
+func (repo *repository) Update(id string, user canonical.User) error {
 	filter := bson.D{{Key: "_id", Value: id}}
 	fields := bson.M{"$set": user}
 
-	_, err = collection.UpdateOne(context.Background(), filter, fields)
+	_, err := repo.collection.UpdateOne(context.Background(), filter, fields)
 
 	if err != nil {
 		return err
@@ -118,20 +93,11 @@ func Update(id string, user canonical.User) error {
 	return nil
 }
 
-func Delete(id string) error {
-
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
-	if err != nil {
-		return err
-	}
-
-	collection := client.Database("user-database").Collection("users")
-
-	_, err = collection.DeleteOne(context.Background(), bson.D{{Key: "_id", Value: id}})
+func (repo *repository) Delete(id string) error {
+	_, err := repo.collection.DeleteOne(context.Background(), bson.D{{Key: "_id", Value: id}})
 	if err != nil {
 		return err
 	}
 
 	return nil
-
 }
