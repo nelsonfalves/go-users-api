@@ -82,7 +82,11 @@ func (repo *repository) GetById(id string) (canonical.User, error) {
 
 func (repo *repository) Update(id string, user canonical.User) error {
 	filter := bson.D{{Key: "_id", Value: id}}
-	fields := bson.M{"$set": user}
+	fields := bson.M{
+		"$set": bson.M{
+			"name": user.Name,
+		},
+	}
 
 	_, err := repo.collection.UpdateOne(context.Background(), filter, fields)
 

@@ -80,7 +80,7 @@ func (rest *rest) Update(c echo.Context) error {
 	id := c.Param("id")
 	err = rest.service.Update(id, toCanonical(user))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
+		return c.JSON(http.StatusInternalServerError, err)
 	}
 
 	return c.JSON(http.StatusOK, user)
