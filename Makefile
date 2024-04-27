@@ -1,5 +1,6 @@
 run-db:
-	docker-compose -f deployments/docker-compose.yaml up -d
+	docker compose -f deployments/docker-compose.yaml up -d ;
 
 kill-db:
-	docker-compose -f deployments/docker-compose.yaml down
+	docker compose -f deployments/docker-compose.yaml down ;
+	
