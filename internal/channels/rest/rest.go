@@ -25,16 +25,16 @@ func New() Rest {
 func (rest *rest) Start() error {
 	router := echo.New()
 
-	router.GET("/", rest.Get)
-	router.GET("/user/:id", rest.GetById)
-	router.POST("/create", rest.Create)
-	router.PUT("/update/:id", rest.Update)
-	router.DELETE("/delete/:id", rest.Delete)
+	router.GET("/", rest.GetAllUsers)
+	router.GET("/user/:id", rest.GetUserById)
+	router.POST("/create", rest.CreateUser)
+	router.PUT("/update/:id", rest.UpdateUser)
+	router.DELETE("/delete/:id", rest.DeleteUser)
 
 	return router.Start(":8080")
 }
 
-func (rest *rest) Create(c echo.Context) error {
+func (rest *rest) CreateUser(c echo.Context) error {
 	var user user
 
 	err := c.Bind(&user)
@@ -42,7 +42,7 @@ func (rest *rest) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errors.New("invalid data"))
 	}
 
-	err = rest.service.Create(toCanonical(user))
+	err = rest.service.CreateUser(toCanonical(user))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
@@ -50,18 +50,18 @@ func (rest *rest) Create(c echo.Context) error {
 	return c.JSON(http.StatusNoContent, nil)
 }
 
-func (rest *rest) Get(c echo.Context) error {
-	users, err := rest.service.Get()
+func (rest *rest) GetAllUsers(c echo.Context) error {
+	userSlice, err := rest.service.GetAllUsers()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
 
-	return c.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, userSlice)
 }
 
-func (rest *rest) GetById(c echo.Context) error {
+func (rest *rest) GetUserById(c echo.Context) error {
 	id := c.Param("id")
-	user, err := rest.service.GetById(id)
+	user, err := rest.service.GetUserById(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
@@ -69,7 +69,7 @@ func (rest *rest) GetById(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-func (rest *rest) Update(c echo.Context) error {
+func (rest *rest) UpdateUser(c echo.Context) error {
 	var user user
 
 	err := c.Bind(&user)
@@ -78,17 +78,17 @@ func (rest *rest) Update(c echo.Context) error {
 	}
 
 	id := c.Param("id")
-	err = rest.service.Update(id, toCanonical(user))
+	err = rest.service.UpdateUser(id, toCanonical(user))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.JSON(http.StatusInternalServerError, err) //perguntar
 	}
 
 	return c.JSON(http.StatusOK, user)
 }
 
-func (rest *rest) Delete(c echo.Context) error {
+func (rest *rest) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
-	err := rest.service.Delete(id)
+	err := rest.service.DeleteUser(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}

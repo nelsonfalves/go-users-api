@@ -10,11 +10,11 @@ import (
 )
 
 type Service interface {
-	Create(user canonical.User) error
-	Get() ([]canonical.User, error)
-	GetById(id string) (canonical.User, error)
-	Update(id string, user canonical.User) error
-	Delete(id string) error
+	CreateUser(user canonical.User) error
+	GetAllUsers() ([]canonical.User, error)
+	GetUserById(id string) (canonical.User, error)
+	UpdateUser(id string, user canonical.User) error
+	DeleteUser(id string) error
 }
 
 type service struct {
@@ -27,11 +27,11 @@ func New() Service {
 	}
 }
 
-func (service *service) Create(user canonical.User) error {
+func (service *service) CreateUser(user canonical.User) error {
 	user.Id = uuid.NewString()
 	user.CreatedAt = time.Now()
 
-	err := service.repo.Create(user)
+	err := service.repo.CreateUser(user)
 	if err != nil {
 		return err
 	}
@@ -39,8 +39,8 @@ func (service *service) Create(user canonical.User) error {
 	return nil
 }
 
-func (service *service) Get() ([]canonical.User, error) {
-	user, err := service.repo.Get()
+func (service *service) GetAllUsers() ([]canonical.User, error) {
+	user, err := service.repo.GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -49,8 +49,8 @@ func (service *service) Get() ([]canonical.User, error) {
 
 }
 
-func (service *service) GetById(id string) (canonical.User, error) {
-	user, err := service.repo.GetById(id)
+func (service *service) GetUserById(id string) (canonical.User, error) {
+	user, err := service.repo.GetUserById(id)
 	if err != nil {
 		return canonical.User{}, err
 	}
@@ -59,8 +59,8 @@ func (service *service) GetById(id string) (canonical.User, error) {
 
 }
 
-func (service *service) Update(id string, user canonical.User) error {
-	err := service.repo.Update(id, user)
+func (service *service) UpdateUser(id string, user canonical.User) error {
+	err := service.repo.UpdateUser(id, user)
 	if err != nil {
 		return err
 	}
@@ -69,8 +69,8 @@ func (service *service) Update(id string, user canonical.User) error {
 
 }
 
-func (service *service) Delete(id string) error {
-	user, err := service.repo.GetById(id)
+func (service *service) DeleteUser(id string) error {
+	user, err := service.repo.GetUserById(id)
 	if err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func (service *service) Delete(id string) error {
 		return fmt.Errorf("user not found on db")
 	}
 
-	err = service.repo.Delete(id)
+	err = service.repo.DeleteUser(id)
 	if err != nil {
 		return err
 	}
