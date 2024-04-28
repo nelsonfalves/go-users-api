@@ -2,6 +2,7 @@ package rest
 
 import (
 	"errors"
+	"go-quickstart/internal/config"
 	"go-quickstart/internal/service"
 	"net/http"
 
@@ -31,7 +32,7 @@ func (rest *rest) Start() error {
 	router.PUT("/update/:id", rest.UpdateUser)
 	router.DELETE("/delete/:id", rest.DeleteUser)
 
-	return router.Start(":8080")
+	return router.Start(":" + config.Get().Port)
 }
 
 func (rest *rest) CreateUser(c echo.Context) error {
@@ -80,7 +81,7 @@ func (rest *rest) UpdateUser(c echo.Context) error {
 	id := c.Param("id")
 	err = rest.service.UpdateUser(id, toCanonical(user))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err) //perguntar
+		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
 
 	return c.JSON(http.StatusOK, user)

@@ -1,0 +1,2 @@
+port: 8081
+connection_string: "mongodb://root:password@localhost:27017"

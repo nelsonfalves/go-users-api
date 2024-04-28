@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"go-quickstart/internal/canonical"
+	"go-quickstart/internal/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -22,7 +23,7 @@ type repository struct {
 }
 
 func New() Repository {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:password@localhost:27017"))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(config.Get().ConnectionString))
 	if err != nil {
 		panic(err)
 	}
