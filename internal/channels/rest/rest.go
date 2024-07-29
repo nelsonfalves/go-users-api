@@ -36,19 +36,19 @@ func (rest *rest) Start() error {
 }
 
 func (rest *rest) CreateUser(c echo.Context) error {
-	var user user
+	var user userRequest
 
 	err := c.Bind(&user)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, errors.New("invalid data"))
 	}
 
-	err = rest.service.CreateUser(toCanonical(user))
+	createdUser, err := rest.service.CreateUser(toCanonical(user))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
 
-	return c.JSON(http.StatusNoContent, nil)
+	return c.JSON(http.StatusCreated, toUserResponse(createdUser))
 }
 
 func (rest *rest) GetAllUsers(c echo.Context) error {
@@ -71,7 +71,7 @@ func (rest *rest) GetUserById(c echo.Context) error {
 }
 
 func (rest *rest) UpdateUser(c echo.Context) error {
-	var user user
+	var user userRequest
 
 	err := c.Bind(&user)
 	if err != nil {

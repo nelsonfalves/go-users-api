@@ -10,7 +10,7 @@ import (
 )
 
 type Service interface {
-	CreateUser(user canonical.User) error
+	CreateUser(user canonical.User) (canonical.User, error)
 	GetAllUsers() ([]canonical.User, error)
 	GetUserById(id string) (canonical.User, error)
 	UpdateUser(id string, user canonical.User) error
@@ -27,16 +27,16 @@ func New() Service {
 	}
 }
 
-func (service *service) CreateUser(user canonical.User) error {
+func (service *service) CreateUser(user canonical.User) (canonical.User, error) {
 	user.Id = uuid.NewString()
 	user.CreatedAt = time.Now()
 
 	err := service.repo.CreateUser(user)
 	if err != nil {
-		return err
+		return canonical.User{}, err
 	}
 
-	return nil
+	return user, nil
 }
 
 func (service *service) GetAllUsers() ([]canonical.User, error) {

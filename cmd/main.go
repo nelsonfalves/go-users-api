@@ -10,8 +10,11 @@ import (
 
 func main() {
 	config.Parse()
+
 	fmt.Println(config.Get())
+
 	server := rest.New()
+
 	err := server.Start()
 	if err != nil {
 		log.Panic().Err(err).Msg("An error occurred while trying to start the server")
