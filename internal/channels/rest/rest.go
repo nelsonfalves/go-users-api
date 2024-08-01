@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Rest interface {
@@ -25,6 +26,7 @@ func New() Rest {
 
 func (rest *rest) Start() error {
 	router := echo.New()
+	router.Use(middleware.Logger())
 
 	router.GET("/", rest.GetAllUsers)
 	router.GET("/user/:id", rest.GetUserById)

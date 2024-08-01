@@ -29,7 +29,7 @@ func New() Repository {
 	}
 
 	return &repository{
-		collection: client.Database("user-database").Collection("userSlice"),
+		collection: client.Database("local").Collection("userSlice"),
 	}
 }
 
