@@ -34,7 +34,7 @@ func (service *service) CreateUser(user canonical.User) (canonical.User, error) 
 
 	err := service.repo.CreateUser(user)
 	if err != nil {
-		logrus.WithError(err).Error("Error occurred when trying to create an user.")
+		logrus.WithError(err).Error("Error occurred when trying to create a user.")
 		return canonical.User{}, err
 	}
 
@@ -55,7 +55,7 @@ func (service *service) GetAllUsers() ([]canonical.User, error) {
 func (service *service) GetUserById(id string) (canonical.User, error) {
 	user, err := service.repo.GetUserById(id)
 	if err != nil {
-		logrus.WithError(err).Error("Error occurred when trying to get an user.")
+		logrus.WithError(err).Error("Error occurred when trying to get a user.")
 		return canonical.User{}, err
 	}
 
@@ -66,7 +66,7 @@ func (service *service) GetUserById(id string) (canonical.User, error) {
 func (service *service) UpdateUser(id string, user canonical.User) error {
 	err := service.repo.UpdateUser(id, user)
 	if err != nil {
-		logrus.WithError(err).Error("Error occurred when trying to update an user.")
+		logrus.WithError(err).Error("Error occurred when trying to update a user.")
 		return err
 	}
 
@@ -77,7 +77,7 @@ func (service *service) UpdateUser(id string, user canonical.User) error {
 func (service *service) DeleteUser(id string) error {
 	user, err := service.repo.GetUserById(id)
 	if err != nil {
-		logrus.WithError(err).Error("Error occurred when trying to get an user.")
+		logrus.WithError(err).Error("Error occurred when trying to get a user.")
 		return err
 	}
 
@@ -87,7 +87,7 @@ func (service *service) DeleteUser(id string) error {
 
 	err = service.repo.DeleteUser(id)
 	if err != nil {
-		logrus.WithError(err).Error("Error occurred when trying to delete an user.")
+		logrus.WithError(err).Error("Error occurred when trying to delete a user.")
 		return err
 	}
 
