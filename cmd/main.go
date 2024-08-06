@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go-quickstart/internal/channels/rest"
 	"go-quickstart/internal/config"
 
@@ -10,8 +9,6 @@ import (
 
 func main() {
 	config.Parse()
-
-	fmt.Println(config.Get())
 
 	server := rest.New()
 

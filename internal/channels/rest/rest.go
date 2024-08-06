@@ -26,15 +26,37 @@ func New() Rest {
 
 func (rest *rest) Start() error {
 	router := echo.New()
+
 	router.Use(middleware.Logger())
 
-	router.GET("/", rest.GetAllUsers)
-	router.GET("/user/:id", rest.GetUserById)
-	router.POST("/create", rest.CreateUser)
-	router.PUT("/update/:id", rest.UpdateUser)
-	router.DELETE("/delete/:id", rest.DeleteUser)
+	router.GET("/users", rest.GetAllUsers)
+	router.GET("/users/:id", rest.GetUserById)
+	router.POST("/users/create", rest.CreateUser)
+	router.PUT("/users/update/:id", rest.UpdateUser)
+	router.DELETE("/users/delete/:id", rest.DeleteUser)
 
 	return router.Start(":" + config.Get().Port)
+}
+
+func (rest *rest) GetAllUsers(c echo.Context) error {
+	userSlice, err := rest.service.GetAllUsers()
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
+	}
+
+	return c.JSON(http.StatusOK, userSlice)
+}
+
+func (rest *rest) GetUserById(c echo.Context) error {
+	id := c.Param("id")
+
+	user, err := rest.service.GetUserById(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
+	}
+
+	return c.JSON(http.StatusOK, user)
 }
 
 func (rest *rest) CreateUser(c echo.Context) error {
@@ -50,26 +72,7 @@ func (rest *rest) CreateUser(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
 
-	return c.JSON(http.StatusCreated, toUserResponse(createdUser))
-}
-
-func (rest *rest) GetAllUsers(c echo.Context) error {
-	userSlice, err := rest.service.GetAllUsers()
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
-	}
-
-	return c.JSON(http.StatusOK, userSlice)
-}
-
-func (rest *rest) GetUserById(c echo.Context) error {
-	id := c.Param("id")
-	user, err := rest.service.GetUserById(id)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
-	}
-
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusCreated, toResponse(createdUser))
 }
 
 func (rest *rest) UpdateUser(c echo.Context) error {
@@ -81,16 +84,17 @@ func (rest *rest) UpdateUser(c echo.Context) error {
 	}
 
 	id := c.Param("id")
-	err = rest.service.UpdateUser(id, toCanonical(user))
+	updatedUser, err := rest.service.UpdateUser(id, toCanonical(user))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, toResponse(updatedUser))
 }
 
 func (rest *rest) DeleteUser(c echo.Context) error {
 	id := c.Param("id")
+
 	err := rest.service.DeleteUser(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errors.New("unexpected error occurred"))

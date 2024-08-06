@@ -11,10 +11,10 @@ import (
 )
 
 type Repository interface {
-	CreateUser(user canonical.User) error
 	GetAllUsers() ([]canonical.User, error)
 	GetUserById(id string) (canonical.User, error)
-	UpdateUser(id string, user canonical.User) error
+	CreateUser(user canonical.User) (canonical.User, error)
+	UpdateUser(id string, user canonical.User) (canonical.User, error)
 	DeleteUser(id string) error
 }
 
@@ -31,15 +31,6 @@ func New() Repository {
 	return &repository{
 		collection: client.Database("local").Collection("userSlice"),
 	}
-}
-
-func (repo *repository) CreateUser(user canonical.User) error {
-	_, err := repo.collection.InsertOne(context.Background(), user)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (repo *repository) GetAllUsers() ([]canonical.User, error) {
@@ -81,7 +72,16 @@ func (repo *repository) GetUserById(id string) (canonical.User, error) {
 	return user, nil
 }
 
-func (repo *repository) UpdateUser(id string, user canonical.User) error {
+func (repo *repository) CreateUser(user canonical.User) (canonical.User, error) {
+	_, err := repo.collection.InsertOne(context.Background(), user)
+	if err != nil {
+		return canonical.User{}, err
+	}
+
+	return user, nil
+}
+
+func (repo *repository) UpdateUser(id string, user canonical.User) (canonical.User, error) {
 	filter := bson.D{{Key: "_id", Value: id}}
 	fields := bson.M{
 		"$set": bson.M{
@@ -92,10 +92,10 @@ func (repo *repository) UpdateUser(id string, user canonical.User) error {
 	_, err := repo.collection.UpdateOne(context.Background(), filter, fields)
 
 	if err != nil {
-		return err
+		return canonical.User{}, err
 	}
 
-	return nil
+	return user, nil
 }
 
 func (repo *repository) DeleteUser(id string) error {

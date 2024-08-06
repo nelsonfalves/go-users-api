@@ -5,6 +5,7 @@ type userRequest struct {
 }
 
 type userResponse struct {
-	Id   string `json:"_id"`
-	Name string `json:"name"`
+	Id        string `json:"_id"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"created_at"`
 }
