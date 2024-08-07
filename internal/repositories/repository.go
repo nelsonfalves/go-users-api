@@ -85,7 +85,9 @@ func (repo *repository) UpdateUser(id string, user canonical.User) (canonical.Us
 	filter := bson.D{{Key: "_id", Value: id}}
 	fields := bson.M{
 		"$set": bson.M{
-			"name": user.Name,
+			"name":     user.Name,
+			"email":    user.Email,
+			"password": user.Password,
 		},
 	}
 
