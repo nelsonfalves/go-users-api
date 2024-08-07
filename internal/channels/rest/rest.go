@@ -2,9 +2,10 @@ package rest
 
 import (
 	"errors"
-	"go-quickstart/internal/config"
-	"go-quickstart/internal/service"
 	"net/http"
+
+	"github.com/nelsonalves117/go-users-api/internal/config"
+	"github.com/nelsonalves117/go-users-api/internal/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

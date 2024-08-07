@@ -1,4 +1,4 @@
-module go-quickstart
+module github.com/nelsonalves117/go-users-api
 
 go 1.22.0
 

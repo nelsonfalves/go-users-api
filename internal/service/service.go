@@ -2,9 +2,10 @@ package service
 
 import (
 	"fmt"
-	"go-quickstart/internal/canonical"
-	"go-quickstart/internal/repositories"
 	"time"
+
+	"github.com/nelsonalves117/go-users-api/internal/canonical"
+	"github.com/nelsonalves117/go-users-api/internal/repositories"
 
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"

@@ -1,8 +1,9 @@
 package rest
 
 import (
-	"go-quickstart/internal/canonical"
 	"time"
+
+	"github.com/nelsonalves117/go-users-api/internal/canonical"
 )
 
 func toCanonical(user userRequest) canonical.User {

@@ -2,8 +2,9 @@ package repositories
 
 import (
 	"context"
-	"go-quickstart/internal/canonical"
-	"go-quickstart/internal/config"
+
+	"github.com/nelsonalves117/go-users-api/internal/canonical"
+	"github.com/nelsonalves117/go-users-api/internal/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

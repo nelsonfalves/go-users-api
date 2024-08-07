@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-quickstart/internal/channels/rest"
-	"go-quickstart/internal/config"
+	"github.com/nelsonalves117/go-users-api/internal/channels/rest"
+	"github.com/nelsonalves117/go-users-api/internal/config"
 
 	"github.com/rs/zerolog/log"
 )
