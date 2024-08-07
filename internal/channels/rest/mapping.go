@@ -1,8 +1,6 @@
 package rest
 
 import (
-	"time"
-
 	"github.com/nelsonalves117/go-users-api/internal/canonical"
 )
 
@@ -20,6 +18,6 @@ func toResponse(user canonical.User) userResponse {
 		Name:      user.Name,
 		Email:     user.Email,
 		Password:  user.Password,
-		CreatedAt: user.CreatedAt.Format(time.RFC3339),
+		CreatedAt: user.CreatedAt,
 	}
 }
