@@ -23,11 +23,11 @@ O projeto ainda está em desenvolvimento e mais funcionalidades serão adicionad
 
 1. No terminal, para criar o binário executável e as imagens Docker, digite:
 
-   make build-app
+       make build-app
 
 2. Em seguida, para subir a aplicação:
 
-   make run-app
+       make run-app
 
 3. Agora já é possível realizar todas as operações no banco de dados:
 
