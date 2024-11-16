@@ -10,9 +10,9 @@ import (
 )
 
 func TestGetAllUsers_Success(t *testing.T) {
-	mockRepo := &MockRepository{}
+	mockRepo := new(MockRepository)
 
-	userTest := []canonical.User{
+	usersTest := []canonical.User{
 		{
 			Id:        "xpto",
 			Name:      "test",
@@ -22,7 +22,7 @@ func TestGetAllUsers_Success(t *testing.T) {
 		},
 	}
 
-	mockRepo.On("GetAllUsers").Return(userTest, nil)
+	mockRepo.On("GetAllUsers").Return(usersTest, nil)
 
 	service := &service{
 		repo: mockRepo,
@@ -41,7 +41,7 @@ func TestGetAllUsers_Success(t *testing.T) {
 }
 
 func TestGetUserById_Success(t *testing.T) {
-	mockRepo := &MockRepository{}
+	mockRepo := new(MockRepository)
 
 	userTest := canonical.User{
 		Id:        "xpto",
@@ -70,7 +70,7 @@ func TestGetUserById_Success(t *testing.T) {
 }
 
 func TestCreateUser_Success(t *testing.T) {
-	mockRepo := &MockRepository{}
+	mockRepo := new(MockRepository)
 
 	userTest := canonical.User{
 		Name:     "test",
@@ -79,9 +79,7 @@ func TestCreateUser_Success(t *testing.T) {
 	}
 
 	mockRepo.On("CreateUser", mock.MatchedBy(func(user canonical.User) bool {
-		return user.Name == "test" &&
-			user.Email == "test@email.com" &&
-			user.Password == "xpto"
+		return user.Name == "test" && user.Email == "test@email.com" && user.Password == "xpto"
 	})).Return(userTest, nil)
 
 	service := &service{
@@ -99,7 +97,7 @@ func TestCreateUser_Success(t *testing.T) {
 }
 
 func TestUpdateUser_Success(t *testing.T) {
-	mockRepo := &MockRepository{}
+	mockRepo := new(MockRepository)
 
 	userTest := canonical.User{
 		Id:        "xpto",
@@ -128,7 +126,7 @@ func TestUpdateUser_Success(t *testing.T) {
 }
 
 func TestDeleteUser_Success(t *testing.T) {
-	mockRepo := &MockRepository{}
+	mockRepo := new(MockRepository)
 
 	userTest := canonical.User{
 		Id:        "xpto",
