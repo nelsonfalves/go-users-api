@@ -32,7 +32,7 @@ func New() Service {
 func (service *service) GetAllUsers() ([]canonical.User, error) {
 	user, err := service.repo.GetAllUsers()
 	if err != nil {
-		logrus.WithError(err).Error("error occurred when trying to get all users")
+		logrus.WithError(err).Error("error occurred while trying to get all users")
 		return nil, err
 	}
 
@@ -42,7 +42,7 @@ func (service *service) GetAllUsers() ([]canonical.User, error) {
 func (service *service) GetUserById(id string) (canonical.User, error) {
 	user, err := service.repo.GetUserById(id)
 	if err != nil {
-		logrus.WithError(err).Error("error occurred when trying to get a user")
+		logrus.WithError(err).Error("error occurred while trying to get a user")
 		return canonical.User{}, err
 	}
 
@@ -55,7 +55,7 @@ func (service *service) CreateUser(user canonical.User) (canonical.User, error) 
 
 	user, err := service.repo.CreateUser(user)
 	if err != nil {
-		logrus.WithError(err).Error("error occurred when trying to create a user")
+		logrus.WithError(err).Error("error occurred while trying to create a user")
 		return canonical.User{}, err
 	}
 
@@ -65,7 +65,7 @@ func (service *service) CreateUser(user canonical.User) (canonical.User, error) 
 func (service *service) UpdateUser(id string, user canonical.User) (canonical.User, error) {
 	user, err := service.repo.UpdateUser(id, user)
 	if err != nil {
-		logrus.WithError(err).Error("error occurred when trying to update a user")
+		logrus.WithError(err).Error("error occurred while trying to update a user")
 		return canonical.User{}, err
 	}
 
@@ -75,7 +75,7 @@ func (service *service) UpdateUser(id string, user canonical.User) (canonical.Us
 func (service *service) DeleteUser(id string) error {
 	user, err := service.repo.GetUserById(id)
 	if err != nil {
-		logrus.WithError(err).Error("error occurred when trying to get a user")
+		logrus.WithError(err).Error("error occurred while trying to get a user")
 		return err
 	}
 
@@ -85,7 +85,7 @@ func (service *service) DeleteUser(id string) error {
 
 	err = service.repo.DeleteUser(id)
 	if err != nil {
-		logrus.WithError(err).Error("error occurred when trying to delete a user")
+		logrus.WithError(err).Error("error occurred while trying to delete a user")
 		return err
 	}
 
